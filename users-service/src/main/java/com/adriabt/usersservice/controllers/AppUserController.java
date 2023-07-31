@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AppUserController {
     private final IAppUserService appUserService;
     @GetMapping("/email/{email}")
-    public ResponseEntity<?> findUserByEmail(@PathVariable String email) {
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
         try {
             return ResponseEntity.ok(appUserService.findUserByEmail(email));
         } catch (Exception e) {

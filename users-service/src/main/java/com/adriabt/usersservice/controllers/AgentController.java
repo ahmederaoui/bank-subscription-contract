@@ -13,7 +13,7 @@ public class AgentController {
     private final IAgentService agentService;
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<?> findAgentByEmail(@PathVariable String email) {
+    public ResponseEntity<?> getAgentByEmail(@PathVariable String email) {
         try {
             return ResponseEntity.ok(agentService.findAgentByEmail(email));
         } catch (Exception e) {
@@ -21,7 +21,7 @@ public class AgentController {
         }
     }
     @PostMapping("/agent")
-    public ResponseEntity<?> createAgent(@RequestBody Agent agent){
+    public ResponseEntity<?> addAgent(@RequestBody Agent agent){
         try {
             return ResponseEntity.ok(agentService.createAgent(agent));
         } catch (Exception e) {

@@ -11,5 +11,5 @@ public interface ISubscriberService {
     Page<Subscriber> findAllSubscribersByKeyword(String keyword,int page, int size);
     Subscriber findSubscriberByEmail(String email) throws SubscriberNotFound;
     Subscriber updateSubscriber(Subscriber subscriber) throws SubscriberNotFound, EmailExist;
-    void deleteSubscriber(String email);
+    boolean deleteSubscriber(String email);
 }

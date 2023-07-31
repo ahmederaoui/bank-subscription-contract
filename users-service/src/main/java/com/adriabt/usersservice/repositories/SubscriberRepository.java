@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface SubscriberRepository extends JpaRepository<Subscriber,String> {
     Page<Subscriber> findAllByFirstnameOrLastnameOrEmailOrPhone(String keyword, Pageable pageable);
     Optional<Subscriber> findSubscriberByEmail(String email);
-    void  deleteSubscriberByEmail(String email);
+    boolean  deleteSubscriberByEmail(String email);
 }

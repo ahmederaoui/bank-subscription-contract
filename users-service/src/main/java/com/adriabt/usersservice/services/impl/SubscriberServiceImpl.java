@@ -66,8 +66,7 @@ public class SubscriberServiceImpl implements ISubscriberService {
     }
 
     @Override
-    public void deleteSubscriber(String email) {
-        subscriberRepository.deleteById(email);
-
+    public boolean deleteSubscriber(String email) {
+        return subscriberRepository.deleteSubscriberByEmail(email);
     }
 }
