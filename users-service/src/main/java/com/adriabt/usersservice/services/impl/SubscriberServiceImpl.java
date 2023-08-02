@@ -1,8 +1,10 @@
 package com.adriabt.usersservice.services.impl;
 
+import com.adriabt.usersservice.dtos.SearchCaractures;
 import com.adriabt.usersservice.entities.Agent;
 import com.adriabt.usersservice.entities.Subscriber;
 import com.adriabt.usersservice.enums.AppRole;
+import com.adriabt.usersservice.enums.MaritalStatus;
 import com.adriabt.usersservice.exceptions.EmailExist;
 import com.adriabt.usersservice.exceptions.MissingInformation;
 import com.adriabt.usersservice.exceptions.SubscriberNotFound;
@@ -36,9 +38,10 @@ public class SubscriberServiceImpl implements ISubscriberService {
     }
 
     @Override
-    public Page<Subscriber> findAllSubscribersByKeyword(String keyword, int page, int size) {
+    public Page<Subscriber> findAllSubscribersByKeyword( int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<Subscriber> allByFirstnameOrLastnameOrEmailOrPhone = subscriberRepository.findAllByFirstnameOrLastnameOrEmailOrPhone(keyword, pageable);
+        Page<Subscriber> allByFirstnameOrLastnameOrEmailOrPhone = subscriberRepository
+                .findAll( pageable);
         return allByFirstnameOrLastnameOrEmailOrPhone;
     }
 

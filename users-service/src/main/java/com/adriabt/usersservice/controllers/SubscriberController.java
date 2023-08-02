@@ -1,6 +1,7 @@
 package com.adriabt.usersservice.controllers;
 
 import com.adriabt.usersservice.entities.Subscriber;
+import com.adriabt.usersservice.enums.MaritalStatus;
 import com.adriabt.usersservice.services.ISubscriberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,10 @@ public class SubscriberController {
         }
     }
     @GetMapping("/search")
-    public ResponseEntity<?> getAllSubscribers(@RequestParam(value = "keyword",defaultValue = "") String keyword,
-                                                @RequestParam(value = "page", defaultValue = "0") int page,
+    public ResponseEntity<?> getAllSubscribers(@RequestParam(value = "page", defaultValue = "0") int page,
                                                 @RequestParam(value = "size", defaultValue = "10") int size){
         try {
-            return ResponseEntity.ok(subscriberService.findAllSubscribersByKeyword(keyword,page,size));
+            return ResponseEntity.ok(subscriberService.findAllSubscribersByKeyword(page,size));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

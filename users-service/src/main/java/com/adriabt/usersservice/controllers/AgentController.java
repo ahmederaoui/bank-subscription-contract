@@ -15,6 +15,7 @@ public class AgentController {
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getAgentByEmail(@PathVariable String email) {
         try {
+            System.out.println(agentService.findAgentByEmail(email));
             return ResponseEntity.ok(agentService.findAgentByEmail(email));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
