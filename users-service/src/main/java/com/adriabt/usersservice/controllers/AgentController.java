@@ -2,6 +2,8 @@ package com.adriabt.usersservice.controllers;
 
 import com.adriabt.usersservice.entities.Agent;
 import com.adriabt.usersservice.services.IAgentService;
+import com.adriabt.usersservice.services.MFATokenManager;
+import com.adriabt.usersservice.services.impl.DefaultMFATokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AgentController {
     private final IAgentService agentService;
+    private final MFATokenManager mfaTokenManager;
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getAgentByEmail(@PathVariable String email) {
@@ -37,5 +40,10 @@ public class AgentController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+    @GetMapping("/verify")
+    public boolean verify(@RequestParam(value = "code",defaultValue = "") String code,
+                          @RequestParam(value = "secret",defaultValue = "") String secret){
+        return mfaTokenManager.verifyTotp(code,secret);
     }
 }

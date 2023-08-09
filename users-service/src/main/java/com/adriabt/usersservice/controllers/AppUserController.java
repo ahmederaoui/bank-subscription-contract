@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/Api/users")
+@RequestMapping("/api/users")
 public class AppUserController {
     private final IAppUserService appUserService;
     @GetMapping("/email/{email}")
