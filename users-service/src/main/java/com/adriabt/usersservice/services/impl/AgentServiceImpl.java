@@ -1,5 +1,6 @@
 package com.adriabt.usersservice.services.impl;
 
+import com.adriabt.usersservice.dtos.MfaTokenData;
 import com.adriabt.usersservice.entities.Agent;
 import com.adriabt.usersservice.enums.AppRole;
 import com.adriabt.usersservice.exceptions.AgentNotFound;
@@ -7,8 +8,11 @@ import com.adriabt.usersservice.exceptions.EmailExist;
 import com.adriabt.usersservice.exceptions.MissingInformation;
 import com.adriabt.usersservice.repositories.AgentRepository;
 import com.adriabt.usersservice.services.IAgentService;
+import com.adriabt.usersservice.services.MFATokenManager;
+import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,22 +23,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AgentServiceImpl implements IAgentService {
     private final AgentRepository agentRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final DefaultMFATokenManager mfaTokenManager;
     @Override
     public Agent findAgentByEmail(String email) throws AgentNotFound {
-        return agentRepository.findAgentByEmail(email).orElseThrow(()->new AgentNotFound(String.format("The agent %s not found",email)));
+        return agentRepository.findAgentByEmail(email).orElseThrow(()->{
+            return new AgentNotFound(String.format("The agent %s not found",email));
+        });
     }
 
     @Override
-    public Agent createAgent(Agent agent) throws EmailExist, MissingInformation {
-        if (agent.getFirstname()!=null && agent.getLastname()!=null && agent.getEmail()!=null&& agent.getPassword()!=null){
+    public MfaTokenData createAgent(Agent agent) throws EmailExist, MissingInformation, QrGenerationException {
+        if (agent.getFirstname()!=null && agent.getLastname()!=null
+                && agent.getEmail()!=null&& agent.getPassword()!=null){
             Optional<Agent> newAgent =agentRepository.findAgentByEmail(agent.getEmail());
-            if (newAgent.isPresent()) throw new EmailExist(String.format("This email %s is already exist",agent.getEmail()));
+            if (newAgent.isPresent()) throw new EmailExist(String.format("This email %s is already exist",
+                    agent.getEmail()));
             agent.setRole(AppRole.BACKOFFICE);
             agent.setCreationDate(new Date());
             agent.setUpdateDate(new Date());
-            return agentRepository.save(agent);
+            agent.setPassword(passwordEncoder.encode(agent.getPassword()));
+            String secret = mfaTokenManager.generateSecretKey();
+            agent.setTotpSecret(secret);
+            Agent agent1 = agentRepository.save(agent);
+            if (agent1!=null){
+                return new MfaTokenData(mfaTokenManager.getQRCode(secret), secret);
+            }
+
         }else throw new MissingInformation("Some important information is missing");
+        return null;
     }
+
+
 
     @Override
     public Agent updateAgent(Agent agent) throws AgentNotFound, EmailExist {
@@ -45,7 +65,8 @@ public class AgentServiceImpl implements IAgentService {
         if (agent.getAgency()!=null) updatedAgent.setAgency(agent.getAgency());
         if (agent.getEmail()!=null) {
             Optional<Agent> newAgent =agentRepository.findAgentByEmail(agent.getEmail());
-            if (newAgent.isPresent()) throw new EmailExist(String.format("This email %s is already exist",agent.getEmail()));
+            if (newAgent.isPresent()) throw new EmailExist(String.format("This email %s is already exist",
+                    agent.getEmail()));
             updatedAgent.setEmail(agent.getEmail());
         }
         updatedAgent.setUpdateDate(new Date());

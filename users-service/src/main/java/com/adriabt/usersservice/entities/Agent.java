@@ -16,6 +16,7 @@ import java.util.List;
 public class Agent extends AppUser{
     private String agency;
     private Date hiringDate;
+    private String totpSecret;
     @JsonIgnore
     private List<String> contracts=new ArrayList<>();
 }
