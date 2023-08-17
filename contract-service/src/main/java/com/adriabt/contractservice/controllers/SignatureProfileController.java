@@ -36,7 +36,7 @@ public class SignatureProfileController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{subscriptionId}")
+    @DeleteMapping("/delete/{signatureProfileId}")
     public ResponseEntity<?> deleteSignatureProfile(@PathVariable String signatureProfileId){
         try {
             signatureProfileService.deleteSignatureProfileForSubscription(signatureProfileId);

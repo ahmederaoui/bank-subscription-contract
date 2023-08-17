@@ -6,5 +6,5 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface SubscriptionRepository extends JpaRepository<Subscription,String> {
-    Page<Subscription> findAllByAgencyContainsIgnoreCaseAndContractStatusIsContainingIgnoreCaseAndContractTypeIsContainingIgnoreCaseAndCAndContractNumStartingWith(String agency, String contractStatus, String contractType, Long contractNum, Pageable pageable);
+    Page<Subscription> findAllByAgencyContainsIgnoreCaseAndContractStatusIsContainingIgnoreCaseAndContractTypeIsContainingIgnoreCaseAndContractNumStartingWith(String agency, String contractStatus, String contractType, Long contractNum, Pageable pageable);
 }

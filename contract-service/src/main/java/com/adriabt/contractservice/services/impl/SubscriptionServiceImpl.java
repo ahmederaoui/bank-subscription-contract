@@ -47,10 +47,10 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     public Subscription updateSubscription(Subscription subscription) throws SubscriptionNotFound {
         Subscription newSubscription = subscriptionRepository.findById(subscription.getId())
                 .orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscription.getId())));
-        if (subscription.getAgency()==null)newSubscription.setAgency(subscription.getAgency());
-        if (subscription.getBankCode()==null)newSubscription.setBankCode(subscription.getBankCode());
-        if (subscription.getAddress()==null)newSubscription.setAddress(subscription.getAddress());
-        if (subscription.getClientSegment()==null)newSubscription.setClientSegment(subscription.getClientSegment());
+        if (subscription.getAgency()!=null)newSubscription.setAgency(subscription.getAgency());
+        if (subscription.getBankCode()!=null)newSubscription.setBankCode(subscription.getBankCode());
+        if (subscription.getAddress()!=null)newSubscription.setAddress(subscription.getAddress());
+        if (subscription.getClientSegment()!=null)newSubscription.setClientSegment(subscription.getClientSegment());
         newSubscription.setUpdateDate(new Date());
         return subscriptionRepository.save(newSubscription);
     }
@@ -58,6 +58,6 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     @Override
     public Page<Subscription> getSubscriptions(String agency, String contractStatus, String contractType, Long contractNum, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return subscriptionRepository.findAllByAgencyContainsIgnoreCaseAndContractStatusIsContainingIgnoreCaseAndContractTypeIsContainingIgnoreCaseAndCAndContractNumStartingWith(agency,contractStatus,contractType,contractNum,pageable);
+        return subscriptionRepository.findAllByAgencyContainsIgnoreCaseAndContractStatusIsContainingIgnoreCaseAndContractTypeIsContainingIgnoreCaseAndContractNumStartingWith(agency,contractStatus,contractType,contractNum,pageable);
     }
 }

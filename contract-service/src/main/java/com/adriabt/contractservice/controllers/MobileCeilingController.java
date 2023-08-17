@@ -36,7 +36,7 @@ public class MobileCeilingController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{subscriptionId}")
+    @DeleteMapping("/delete/{ceilingId}")
     public ResponseEntity<?> deleteCeiling(@PathVariable String ceilingId){
         try {
             ceilingService.deleteCeiling(ceilingId);

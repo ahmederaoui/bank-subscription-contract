@@ -36,7 +36,7 @@ public class SignatureMatrixController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{subscriptionId}")
+    @DeleteMapping("/delete/{signatureMatrixId}")
     public ResponseEntity<?> deleteSignatureMatrix(@PathVariable String signatureMatrixId){
         try {
             signatureMatrixService.deleteSignatureMatrixForSubscription(signatureMatrixId);
