@@ -1,18 +1,14 @@
 package com.adriabt.contractservice.services;
 
-import com.adriabt.contractservice.entities.SignatureMatrix;
-import com.adriabt.contractservice.entities.SignatureProfil;
 import com.adriabt.contractservice.entities.Subscription;
+import com.adriabt.contractservice.exceptions.IncompleteInformation;
+import com.adriabt.contractservice.exceptions.SubscriptionNotFound;
 import org.springframework.data.domain.Page;
 
 public interface ISubscriptionService {
-    Subscription createSubscription(Subscription subscription);
-    Subscription addSignatureProfilToSubscription(String signatureProfileId);
-    Subscription addSignatureMatrixToSubscription(String signatureMatrixId);
-    Subscription cancelOrTerminateSubscription();
-    Subscription updateSubscription(Subscription subscription);
-    Subscription deleteSignatureProfileFromSubscription(String signatureProfileId);
-    Subscription deleteSignatureMatrixFromSubscription(String signatureMatrixId);
-    Page<Subscription> getSubscription(String Keyword,int page,int size);
+    Subscription createSubscription(Subscription subscription) throws IncompleteInformation;
+    Subscription cancelOrTerminateSubscription(String subscriptionId) throws SubscriptionNotFound;
+    Subscription updateSubscription(Subscription subscription) throws SubscriptionNotFound;
+    Page<Subscription> getSubscriptions(String agency, String contractStatus, String contractType, Long contractNum,int page,int size);
 
 }

@@ -19,8 +19,8 @@ public class SignatureMatrix {
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     private String authorizedOperation;
-    private double minAmount;
-    private double maxAmount;
+    private Double minAmount;
+    private Double maxAmount;
     @OneToMany
-    private List<SignatureProfil> signatureProfils = new ArrayList<>();
+    private List<SignatureProfile> signatureProfiles = new ArrayList<>();
 }

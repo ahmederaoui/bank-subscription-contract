@@ -16,7 +16,7 @@ public class Ceiling {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private double minUnitAmount;
-    private double maxUnitCeiling;
-    private double TransferPerDay;
+    private Double minUnitAmount;
+    private Double maxUnitCeiling;
+    private Double TransferPerDay;
 }

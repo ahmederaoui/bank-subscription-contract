@@ -4,7 +4,6 @@ import com.adriabt.contractservice.enums.ClientSegment;
 import com.adriabt.contractservice.enums.ContractStatus;
 import com.adriabt.contractservice.enums.ContractType;
 import jakarta.persistence.*;
-import jakarta.ws.rs.GET;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,6 +22,7 @@ public class Subscription {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contractNum;
     private ContractType contractType;
     private String agency;
@@ -37,7 +37,7 @@ public class Subscription {
     @OneToMany
     private List<SignatureMatrix> signatureMatrices = new ArrayList<>();
     @OneToMany
-    private List<SignatureProfil> signatureProfils = new ArrayList<>();
+    private List<SignatureProfile> signatureProfiles = new ArrayList<>();
     @OneToOne
     private WebCeiling webCeiling;
     @OneToOne

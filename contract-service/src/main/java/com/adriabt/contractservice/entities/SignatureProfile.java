@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @Entity
-public class SignatureProfil {
+public class SignatureProfile {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private int rank;
+    private Integer rank;
     private String description;
 }
