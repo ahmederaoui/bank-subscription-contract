@@ -11,5 +11,5 @@ public interface ISignatureProfileService {
     SignatureProfile createSignatureProfileForSubscription(SignatureProfile signatureProfile, String subscriptionId) throws SubscriptionNotFound, IncompleteInformation;
     SignatureProfile updateSignatureProfileForSubscription(SignatureProfile signatureProfile) throws SignatureProfileNotFound;
     List<SignatureProfile> findAllSignatureProfileForSubscription(String subscriptionId) throws SubscriptionNotFound;
-    void deleteSignatureProfileForSubscription(String signatureProfileId);
+    void deleteSignatureProfileForSubscription(String signatureProfileId, String subscriptionId) throws SubscriptionNotFound, SignatureProfileNotFound;
 }

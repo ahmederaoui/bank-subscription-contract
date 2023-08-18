@@ -36,10 +36,10 @@ public class SignatureMatrixController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{signatureMatrixId}")
-    public ResponseEntity<?> deleteSignatureMatrix(@PathVariable String signatureMatrixId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteSignatureMatrix(@RequestParam String signatureMatrixId,@RequestParam String subsscriptionId){
         try {
-            signatureMatrixService.deleteSignatureMatrixForSubscription(signatureMatrixId);
+            signatureMatrixService.deleteSignatureMatrixForSubscription(signatureMatrixId,subsscriptionId);
             return new ResponseEntity<>(signatureMatrixId, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

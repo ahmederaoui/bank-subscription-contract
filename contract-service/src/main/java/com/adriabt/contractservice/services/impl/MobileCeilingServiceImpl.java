@@ -44,7 +44,10 @@ public class MobileCeilingServiceImpl implements ICeilingService<MobileCeiling> 
     }
 
     @Override
-    public void deleteCeiling(String ceilingId) {
+    public void deleteCeiling(String ceilingId,String subscriptionId) throws SubscriptionNotFound {
+        Subscription subscription = subscriptionRepository.findById(subscriptionId).orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscriptionId)));
+        subscription.setMobileCeiling(null);
+        subscriptionRepository.save(subscription);
         ceilingRepository.deleteById(ceilingId);
     }
 }

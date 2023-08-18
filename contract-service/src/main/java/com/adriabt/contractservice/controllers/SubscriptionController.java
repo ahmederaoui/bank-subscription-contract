@@ -1,6 +1,9 @@
 package com.adriabt.contractservice.controllers;
 
 import com.adriabt.contractservice.entities.Subscription;
+import com.adriabt.contractservice.enums.ClientSegment;
+import com.adriabt.contractservice.enums.ContractStatus;
+import com.adriabt.contractservice.enums.ContractType;
 import com.adriabt.contractservice.services.ISubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,13 +32,14 @@ public class SubscriptionController {
     }
     @GetMapping("/search")
     public ResponseEntity<?> getSubscriptions(@RequestParam(value = "agency",defaultValue = "") String agency,
-                                              @RequestParam(value = "contractStatus",defaultValue = "") String contractStatus,
-                                              @RequestParam(value = "agency",defaultValue = "") String contractType,
-                                              @RequestParam(value = "contractNum",defaultValue = "") Long contractNum,
+                                              @RequestParam(value = "contractStatus",defaultValue = "") ContractStatus contractStatus,
+                                              @RequestParam(value = "contractType",defaultValue = "") ContractType contractType,
+                                              @RequestParam(value = "clientSegment",defaultValue = "") ClientSegment clientSegment,
+                                              @RequestParam(value = "id",defaultValue = "") String id,
                                               @RequestParam(value = "page", defaultValue = "0") int page,
                                               @RequestParam(value = "size", defaultValue = "10") int size){
         try {
-            return ResponseEntity.ok(subscriptionService.getSubscriptions( agency,  contractStatus,  contractType,  contractNum, page, size));
+            return ResponseEntity.ok(subscriptionService.getSubscriptions( agency,  contractStatus,  contractType, clientSegment,id,page, size));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

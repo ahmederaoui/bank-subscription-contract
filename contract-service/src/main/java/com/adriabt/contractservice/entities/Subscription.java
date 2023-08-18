@@ -24,14 +24,17 @@ public class Subscription {
     private String id;
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long contractNum;
+    @Enumerated(value = EnumType.STRING)
     private ContractType contractType;
     private String agency;
     private Long BankCode;
+    @Enumerated(value = EnumType.STRING)
     private ClientSegment clientSegment;
     private String address;
     private Date creationDate;
     private Date signatureDate;
     private Date updateDate;
+    @Enumerated(value = EnumType.STRING)
     private ContractStatus contractStatus;
     private String agentId;
     @OneToMany

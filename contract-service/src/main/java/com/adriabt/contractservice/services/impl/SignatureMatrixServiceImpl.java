@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -52,7 +54,12 @@ public class SignatureMatrixServiceImpl implements ISignatureMatrixService {
     }
 
     @Override
-    public void deleteSignatureMatrixForSubscription(String signatureMatrixID) {
-        matrixRepository.deleteById(signatureMatrixID);
+    public void deleteSignatureMatrixForSubscription(String signatureMatrixId,String subscriptionId) throws SubscriptionNotFound {
+        Subscription subscription = subscriptionRepository.findById(subscriptionId)
+                .orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscriptionId)));
+        List<SignatureMatrix> signatureMatrices = subscription.getSignatureMatrices().stream().filter(s->!s.getId().equals(signatureMatrixId)).collect(Collectors.toList());
+        subscription.setSignatureMatrices(signatureMatrices);
+        subscriptionRepository.save(subscription);
+        matrixRepository.deleteById(signatureMatrixId);
     }
 }

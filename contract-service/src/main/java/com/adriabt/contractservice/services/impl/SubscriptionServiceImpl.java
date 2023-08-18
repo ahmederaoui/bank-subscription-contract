@@ -1,14 +1,15 @@
 package com.adriabt.contractservice.services.impl;
 
 import com.adriabt.contractservice.entities.Subscription;
+import com.adriabt.contractservice.enums.ClientSegment;
 import com.adriabt.contractservice.enums.ContractStatus;
+import com.adriabt.contractservice.enums.ContractType;
 import com.adriabt.contractservice.exceptions.IncompleteInformation;
 import com.adriabt.contractservice.exceptions.SubscriptionNotFound;
 import com.adriabt.contractservice.repositories.SubscriptionRepository;
 import com.adriabt.contractservice.services.ISubscriptionService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +57,8 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     }
 
     @Override
-    public Page<Subscription> getSubscriptions(String agency, String contractStatus, String contractType, Long contractNum, int page, int size) {
+    public Page<Subscription> getSubscriptions(String agency, ContractStatus contractStatus, ContractType contractType,ClientSegment clientSegment,String id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return subscriptionRepository.findAllByAgencyContainsIgnoreCaseAndContractStatusIsContainingIgnoreCaseAndContractTypeIsContainingIgnoreCaseAndContractNumStartingWith(agency,contractStatus,contractType,contractNum,pageable);
+        return subscriptionRepository.findAllByAgencyContainsIgnoreCaseAndContractStatusAndContractTypeAndClientSegmentAndIdStartingWith(agency,contractStatus,contractType,clientSegment, id,pageable);
     }
 }

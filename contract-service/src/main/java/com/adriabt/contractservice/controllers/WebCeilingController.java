@@ -35,10 +35,10 @@ public class WebCeilingController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{ceilingId}")
-    public ResponseEntity<?> deleteCeiling(@PathVariable String ceilingId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteCeiling(@RequestParam String ceilingId,@RequestParam String subscriptionId){
         try {
-            ceilingService.deleteCeiling(ceilingId);
+            ceilingService.deleteCeiling(ceilingId,subscriptionId);
             return new ResponseEntity<>(ceilingId, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

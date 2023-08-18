@@ -19,4 +19,5 @@ public class Ceiling {
     private Double minUnitAmount;
     private Double maxUnitCeiling;
     private Double TransferPerDay;
+
 }

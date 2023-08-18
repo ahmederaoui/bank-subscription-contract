@@ -11,7 +11,7 @@ public interface ISignatureMatrixService {
     SignatureMatrix createSignatureMatrixForSubscription(SignatureMatrix signatureMatrix, String subscriptionId) throws SubscriptionNotFound, IncompleteInformation;
     SignatureMatrix updateSignatureMatrixForSubscription(SignatureMatrix signatureMatrix) throws SignatureMatrixNotFound;
     List<SignatureMatrix> findAllSignatureMatrixForSubscription(String subscriptionId) throws SubscriptionNotFound;
-    void deleteSignatureMatrixForSubscription(String signatureMatrixID);
+    void deleteSignatureMatrixForSubscription(String signatureMatrixID, String subscriptionId) throws SubscriptionNotFound;
 
 
 

@@ -44,7 +44,10 @@ public class WebCeilingServiceImpl implements ICeilingService<WebCeiling> {
     }
 
     @Override
-    public void deleteCeiling(String ceilingId) {
+    public void deleteCeiling(String ceilingId,String subscriptionId) throws SubscriptionNotFound {
+        Subscription subscription = subscriptionRepository.findById(subscriptionId).orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscriptionId)));
+        subscription.setWebCeiling(null);
+        subscriptionRepository.save(subscription);
         ceilingRepository.deleteById(ceilingId);
     }
 }

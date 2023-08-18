@@ -36,10 +36,10 @@ public class SignatureProfileController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @DeleteMapping("/delete/{signatureProfileId}")
-    public ResponseEntity<?> deleteSignatureProfile(@PathVariable String signatureProfileId){
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteSignatureProfile(@RequestParam String signatureProfileId,@RequestParam String subscriptionId){
         try {
-            signatureProfileService.deleteSignatureProfileForSubscription(signatureProfileId);
+            signatureProfileService.deleteSignatureProfileForSubscription(signatureProfileId,subscriptionId);
             return new ResponseEntity<>(signatureProfileId, HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
