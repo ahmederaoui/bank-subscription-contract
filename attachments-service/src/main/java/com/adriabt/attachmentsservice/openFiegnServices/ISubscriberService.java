@@ -10,4 +10,5 @@ public interface ISubscriberService {
     void attachSubscriber(@RequestParam String attachmentId,@RequestParam String subscriberId);
     @PostMapping("/api/subscribers/subscriber/detach")
     void detachSubscriber(@RequestParam String attachmentId,@RequestParam String subscriberId);
+
 }
