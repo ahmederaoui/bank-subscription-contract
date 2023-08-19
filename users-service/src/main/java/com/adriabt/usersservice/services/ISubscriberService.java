@@ -14,4 +14,6 @@ public interface ISubscriberService {
     Subscriber findSubscriberByEmail(String email) throws SubscriberNotFound;
     Subscriber updateSubscriber(Subscriber subscriber) throws SubscriberNotFound, EmailExist;
     boolean deleteSubscriber(String email);
+    void attachSubscriber(String attachmentId,String subscriberId) throws SubscriberNotFound;
+    void detachSubscriber(String attachmentId,String subscriberId) throws SubscriberNotFound;
 }

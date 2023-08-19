@@ -47,5 +47,5 @@ public class Subscription {
     private MobileCeiling mobileCeiling;
     private List<String> subscriberIds = new ArrayList<>();
     private List<String> accountIds = new ArrayList<>();
-    private List<String> carteIds = new ArrayList<>();
+    private List<String> cardIds = new ArrayList<>();
 }

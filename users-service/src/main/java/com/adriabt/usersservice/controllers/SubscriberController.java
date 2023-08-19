@@ -4,6 +4,7 @@ import com.adriabt.usersservice.entities.Subscriber;
 import com.adriabt.usersservice.enums.MaritalStatus;
 import com.adriabt.usersservice.services.ISubscriberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,6 +52,24 @@ public class SubscriberController {
     public ResponseEntity<?> updateSubscriber(@RequestBody Subscriber subscriber){
         try {
             return ResponseEntity.ok(subscriberService.updateSubscriber(subscriber));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/subscriber/attach")
+    public ResponseEntity<?> attachSubscriber(@RequestParam String attachmentId,@RequestParam String subscriberId){
+        try {
+            subscriberService.attachSubscriber(attachmentId,subscriberId);
+            return new ResponseEntity<>("Attachment done", HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/subscriber/detach")
+    public ResponseEntity<?> detachSubscriber(@RequestParam String attachmentId,@RequestParam String subscriberId){
+        try {
+            subscriberService.detachSubscriber(attachmentId,subscriberId);
+            return new ResponseEntity<>("detachment done", HttpStatus.OK);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
