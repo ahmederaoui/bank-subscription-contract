@@ -2,6 +2,7 @@ package com.adriabt.attachmentsservice.services.impl;
 
 import com.adriabt.attachmentsservice.entities.Attachment;
 import com.adriabt.attachmentsservice.enums.AttachmentStatus;
+import com.adriabt.attachmentsservice.exceptions.AttachmentNotFound;
 import com.adriabt.attachmentsservice.models.Subscription;
 import com.adriabt.attachmentsservice.openFiegnServices.IContractService;
 import com.adriabt.attachmentsservice.openFiegnServices.ISubscriberService;
@@ -10,6 +11,8 @@ import com.adriabt.attachmentsservice.services.IAttachmentService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -36,7 +39,8 @@ public class AttachmentServiceImpl implements IAttachmentService {
 
     @Override
     public Page<Attachment> getAttachments(String id, AttachmentStatus attachmentStatus, int page, int size) {
-        return null;
+        Pageable pageable = PageRequest.of(page,size);
+        return attachmentRepository.findAllByIdIsStartingWithAndAndAttachmentStatus(id,attachmentStatus,pageable);
     }
 
     @Override
@@ -45,8 +49,10 @@ public class AttachmentServiceImpl implements IAttachmentService {
     }
 
     @Override
-    public Attachment cancelAttachment(String attachmentId) {
-        return null;
+    public Attachment cancelAttachment(String attachmentId) throws AttachmentNotFound {
+        Attachment attachment = getAttachmentById(attachmentId);
+        attachment.setAttachmentStatus(AttachmentStatus.CANCELED);
+        return attachmentRepository.save(attachment);
     }
 
     @Override
@@ -55,7 +61,8 @@ public class AttachmentServiceImpl implements IAttachmentService {
     }
 
     @Override
-    public Attachment getAttachmentById(String attachmentId) {
-        return null;
+    public Attachment getAttachmentById(String attachmentId) throws AttachmentNotFound {
+        return attachmentRepository.findById(attachmentId)
+                .orElseThrow(()-> new AttachmentNotFound(String.format("This attachment %s not found",attachmentId)));
     }
 }
