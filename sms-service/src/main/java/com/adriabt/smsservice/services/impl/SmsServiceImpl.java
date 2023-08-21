@@ -33,7 +33,7 @@ public class SmsServiceImpl implements ISmsService {
         var smsApi = new SmsApi(apiClient);
         String otp = generateOtp();
         String recipient = "212"+otpRequest.getPhoneNumber().substring(1);
-        String otpMessage = "Dear Customer , Your OTP from AdriaBt is  " + otp + " for sending sms through Spring boot application. Thank You.";
+        String otpMessage = "Dear Customer , Your OTP from AdriaBt is  " + otp + " . Thank You.";
         var smsMessage = new SmsTextualMessage()
                 .from("AdraiaBt")
                 .addDestinationsItem(new SmsDestination().to(recipient))
@@ -56,16 +56,16 @@ public class SmsServiceImpl implements ISmsService {
     }
 
     @Override
-    public String validateOtp(OtpValidationRequest otpValidationRequest) {
+    public boolean validateOtp(OtpValidationRequest otpValidationRequest) {
         Set<String> keys = otpMap.keySet();
         String username = null;
         for(String key : keys)
             username = key;
         if (otpValidationRequest.getUsername().equals(username)) {
             otpMap.remove(username,otpValidationRequest.getOtpNumber());
-            return "OTP is valid!";
+            return true;
         } else {
-            return "OTP is invalid!";
+            return false;
         }
     }
 

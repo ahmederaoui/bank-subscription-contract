@@ -22,6 +22,8 @@ public class Attachment {
     private String id;
     private Language language;
     private Date creationDate;
+    private Date signatureDate;
+    private Date updateDate;
     private AttachmentStatus attachmentStatus;
     private String subscriptionId;
     private String subscriberId;

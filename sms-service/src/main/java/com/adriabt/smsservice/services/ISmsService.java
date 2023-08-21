@@ -6,6 +6,6 @@ import com.adriabt.smsservice.dtos.OtpValidationRequest;
 
 public interface ISmsService {
     OtpResponse sendOtp(OtpRequest otpRequest);
-    String validateOtp(OtpValidationRequest otpValidationRequest);
+    boolean validateOtp(OtpValidationRequest otpValidationRequest);
     String generateOtp();
 }
