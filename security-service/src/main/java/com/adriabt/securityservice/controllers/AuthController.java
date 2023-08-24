@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class TestController {
+public class AuthController {
     private final AgentService agentService;
     private final AuthService authService;
     @PostMapping("/v1/token")

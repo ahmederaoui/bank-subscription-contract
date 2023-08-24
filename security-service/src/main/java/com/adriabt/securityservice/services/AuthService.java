@@ -29,13 +29,13 @@ public class AuthService {
     public Map<String, String> getJwtToken(AuthDto authDto){
         String subject=null;
         String scope=null;
-            Authentication authentication = authenticationManager.authenticate(
+        Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authDto.getUsername(), authDto.getPassword())
-            );
+            );/*
         System.out.println(authentication.getName()+" hhhh "+authentication.getAuthorities().stream().map(aut -> aut.getAuthority())
-                .collect(Collectors.joining(" ")));
-            subject=authentication.getName();
-            scope=authentication.getAuthorities()
+                .collect(Collectors.joining(" ")));*/
+        subject=authentication.getName();
+        scope=authentication.getAuthorities()
                     .stream().map(aut -> aut.getAuthority())
                     .collect(Collectors.joining(" "));
 

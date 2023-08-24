@@ -1,5 +1,6 @@
 package com.adriabt.contractservice.services.impl;
 
+import com.adriabt.contractservice.dtos.AttachmentDTO;
 import com.adriabt.contractservice.entities.Subscription;
 import com.adriabt.contractservice.enums.ClientSegment;
 import com.adriabt.contractservice.enums.ContractStatus;
@@ -15,7 +16,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -26,9 +31,10 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
         if(subscription.getAgency()==null||
                 subscription.getContractType()==null||
                 subscription.getClientSegment()==null)throw new IncompleteInformation("Some information is messing");
-        subscription.setContractStatus(ContractStatus.REGISTRED);
+        subscription.setContractStatus(ContractStatus.REGISTERED);
         subscription.setCreationDate(new Date());
         subscription.setUpdateDate(new Date());
+        subscription.setCardIds(new ArrayList<>());
         return subscriptionRepository.save(subscription);
     }
 
@@ -36,7 +42,7 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     public Subscription cancelOrTerminateSubscription(String subscriptionId) throws SubscriptionNotFound {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscriptionId)));
-        if (subscription.getContractStatus()==ContractStatus.REGISTRED){
+        if (subscription.getContractStatus()==ContractStatus.REGISTERED){
             subscription.setContractStatus(ContractStatus.CANCELED);
         } else if (subscription.getContractStatus()==ContractStatus.SIGNED) {
             subscription.setContractStatus(ContractStatus.TERMINATED);
@@ -60,5 +66,34 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     public Page<Subscription> getSubscriptions(String agency, ContractStatus contractStatus, ContractType contractType,ClientSegment clientSegment,String id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return subscriptionRepository.findAllByAgencyContainsIgnoreCaseAndContractStatusAndContractTypeAndClientSegmentAndIdStartingWith(agency,contractStatus,contractType,clientSegment, id,pageable);
+    }
+
+    @Override
+    public void subscriptionAttachment(AttachmentDTO attachmentDTO) throws SubscriptionNotFound {
+        Subscription subscription = subscriptionRepository.findById(attachmentDTO.getSubscriptionId())
+                .orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",attachmentDTO.getSubscriptionId())));
+        subscription.getSubscriberIds().add(attachmentDTO.getSubscriberId());
+        attachmentDTO.getAccountIds().forEach(a->subscription.getAccountIds().add(a));
+        attachmentDTO.getCardIds().forEach(a->subscription.getCardIds().add(a));
+        subscriptionRepository.save(subscription);
+    }
+
+    @Override
+    public void subscriptionDetachment(AttachmentDTO attachmentDTO) throws SubscriptionNotFound {
+        Subscription subscription = subscriptionRepository.findById(attachmentDTO.getSubscriptionId())
+                .orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",attachmentDTO.getSubscriptionId())));
+        List<String> subscriberIds= subscription.getSubscriberIds().stream().filter(s->!s.equals(attachmentDTO.getSubscriberId())).collect(Collectors.toList());
+        subscription.setSubscriberIds(subscriberIds);
+        List<String> accountIds= subscription.getAccountIds().stream().filter(a->!a.equals(attachmentDTO.getAccountIds())).collect(Collectors.toList());
+        subscription.setAccountIds(accountIds);
+        subscription.getCardIds().addAll(attachmentDTO.getCardIds());
+        List<String> cardIds= subscription.getCardIds().stream().filter(c->!c.equals(attachmentDTO.getCardIds())).collect(Collectors.toList());
+        subscription.setCardIds(cardIds);
+        subscriptionRepository.save(subscription);
+    }
+
+    @Override
+    public Subscription getSubscriptionById(String subscriptionId) throws SubscriptionNotFound {
+        return subscriptionRepository.findById(subscriptionId).orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscriptionId)));
     }
 }

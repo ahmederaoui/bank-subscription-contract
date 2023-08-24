@@ -18,7 +18,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -71,5 +73,22 @@ public class SubscriberServiceImpl implements ISubscriberService {
     @Override
     public boolean deleteSubscriber(String email) {
         return subscriberRepository.deleteSubscriberByEmail(email);
+    }
+
+    @Override
+    public void attachSubscriber(String attachmentId,String subscriberId) throws SubscriberNotFound {
+        Subscriber subscriber =subscriberRepository.findById(subscriberId)
+                .orElseThrow(()->new SubscriberNotFound(String.format("The subscriber %s not found",subscriberId)));
+        subscriber.getAttachmentIds().add(attachmentId);
+        subscriberRepository.save(subscriber);
+    }
+
+    @Override
+    public void detachSubscriber(String attachmentId, String subscriberId) throws SubscriberNotFound {
+        Subscriber subscriber =subscriberRepository.findById(subscriberId)
+                .orElseThrow(()->new SubscriberNotFound(String.format("The subscriber %s not found",subscriberId)));
+        List<String> attachmentIds = subscriber.getAttachmentIds().stream().filter(a->!a.equals(attachmentId)).collect(Collectors.toList());
+        subscriber.setAttachmentIds(attachmentIds);
+        subscriberRepository.save(subscriber);
     }
 }
