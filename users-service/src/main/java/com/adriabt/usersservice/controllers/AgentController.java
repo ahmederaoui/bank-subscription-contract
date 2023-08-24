@@ -1,5 +1,6 @@
 package com.adriabt.usersservice.controllers;
 
+import com.adriabt.usersservice.dtos.VerificationRequest;
 import com.adriabt.usersservice.entities.Agent;
 import com.adriabt.usersservice.services.IAgentService;
 import com.adriabt.usersservice.services.MFATokenManager;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class AgentController {
     private final IAgentService agentService;
-    private final MFATokenManager mfaTokenManager;
+    private final DefaultMFATokenManager mfaTokenManager;
 
     @GetMapping("/email/{email}")
     public ResponseEntity<?> getAgentByEmail(@PathVariable String email) {
@@ -24,7 +25,7 @@ public class AgentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/agent")
+    @PostMapping("/create")
     public ResponseEntity<?> addAgent(@RequestBody Agent agent){
         try {
             return ResponseEntity.ok(agentService.createAgent(agent));
@@ -33,7 +34,7 @@ public class AgentController {
         }
     }
 
-    @PutMapping("/agent")
+    @PutMapping("/update")
     public ResponseEntity<?> updateAgent(@RequestBody Agent agent){
         try {
             return ResponseEntity.ok(agentService.updateAgent(agent));
@@ -41,9 +42,13 @@ public class AgentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/verify")
-    public boolean verify(@RequestParam(value = "code",defaultValue = "") String code,
-                          @RequestParam(value = "secret",defaultValue = "") String secret){
-        return mfaTokenManager.verifyTotp(code,secret);
+    @PostMapping ("/verify")
+    public ResponseEntity<?> verify(@RequestBody VerificationRequest verificationRequest){
+        try {
+            return ResponseEntity.ok(mfaTokenManager.isOtpValid(verificationRequest));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
     }
 }

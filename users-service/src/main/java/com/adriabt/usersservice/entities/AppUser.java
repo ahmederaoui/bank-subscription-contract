@@ -22,7 +22,7 @@ public class AppUser {
     private String firstname;
     private String lastname;
     private String email;
-    private Long phone;
+    private String phone;
     private String Password;
     @Enumerated(EnumType.STRING)
     private AppRole role;

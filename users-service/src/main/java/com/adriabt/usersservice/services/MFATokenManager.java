@@ -1,9 +1,11 @@
 package com.adriabt.usersservice.services;
 
+import com.adriabt.usersservice.dtos.VerificationRequest;
+import com.adriabt.usersservice.exceptions.AgentNotFound;
 import dev.samstevens.totp.exceptions.QrGenerationException;
 
 public interface MFATokenManager {
-    String generateSecretKey();
-    String getQRCode(final String secret) throws QrGenerationException;
-    boolean verifyTotp(final String code, final String secret);
+    String generateNewSecret();
+    String generateQrCodeImageUri(String secret) ;
+    boolean isOtpValid(VerificationRequest verificationRequest)throws AgentNotFound;
 }

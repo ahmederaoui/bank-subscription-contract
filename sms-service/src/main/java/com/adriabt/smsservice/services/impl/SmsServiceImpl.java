@@ -27,11 +27,13 @@ public class SmsServiceImpl implements ISmsService {
     Map<String,String> otpMap = new HashMap<>();
     @Override
     public OtpResponse sendOtp(OtpRequest otpRequest) {
+        String otp = generateOtp();
+        System.out.println(otp);
         var apiClient = ApiClient.forApiKey(ApiKey.from(infobipConfig.getKey()))
                 .withBaseUrl(BaseUrl.from(infobipConfig.getUrl()))
                 .build();
         var smsApi = new SmsApi(apiClient);
-        String otp = generateOtp();
+        //String otp = generateOtp();
         String recipient = "212"+otpRequest.getPhoneNumber().substring(1);
         String otpMessage = "Dear Customer , Your OTP from AdriaBt is  " + otp + " . Thank You.";
         var smsMessage = new SmsTextualMessage()

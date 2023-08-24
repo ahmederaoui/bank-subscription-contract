@@ -73,8 +73,8 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
         Subscription subscription = subscriptionRepository.findById(attachmentDTO.getSubscriptionId())
                 .orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",attachmentDTO.getSubscriptionId())));
         subscription.getSubscriberIds().add(attachmentDTO.getSubscriberId());
-        subscription.getAccountIds().addAll(attachmentDTO.getAccountIds());
-        subscription.getCardIds().addAll(attachmentDTO.getCardIds());
+        attachmentDTO.getAccountIds().forEach(a->subscription.getAccountIds().add(a));
+        attachmentDTO.getCardIds().forEach(a->subscription.getCardIds().add(a));
         subscriptionRepository.save(subscription);
     }
 

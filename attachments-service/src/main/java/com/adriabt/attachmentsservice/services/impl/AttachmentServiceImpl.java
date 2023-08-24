@@ -33,9 +33,8 @@ public class AttachmentServiceImpl implements IAttachmentService {
         attachment.setAttachmentStatus(AttachmentStatus.REGISTERED);
         attachment.setCreationDate(new Date());
         Subscription subscription = contractService.getSubscriptionsById(attachment.getSubscriptionId());
-        subscription.getSignatureProfiles().forEach(signatureProfile -> {
-            attachment.getSignatureProfiles().add(signatureProfile.getId());
-        });
+        subscription.getSignatureProfiles()
+                .forEach(signatureProfile -> attachment.getSignatureProfiles().add(signatureProfile.getId()));
         attachment.setMobileCeilingId(subscription.getMobileCeiling().getId());
         attachment.setWebCeilingId(subscription.getWebCeiling().getId());
         return attachmentRepository.save(attachment);
@@ -50,9 +49,8 @@ public class AttachmentServiceImpl implements IAttachmentService {
         if(attachment.getSubscriberId()!=null)updateAttachment.setSubscriberId(attachment.getSubscriberId());
         if(attachment.getSubscriptionId()!=null) {
             Subscription subscription = contractService.getSubscriptionsById(attachment.getSubscriptionId());
-            subscription.getSignatureProfiles().forEach(signatureProfile -> {
-                attachment.getSignatureProfiles().add(signatureProfile.getId());
-            });
+            subscription.getSignatureProfiles()
+                    .forEach(signatureProfile -> attachment.getSignatureProfiles().add(signatureProfile.getId()));
             updateAttachment.setMobileCeilingId(subscription.getMobileCeiling().getId());
             updateAttachment.setWebCeilingId(subscription.getWebCeiling().getId());
         }
@@ -69,8 +67,9 @@ public class AttachmentServiceImpl implements IAttachmentService {
     @Override
     public Attachment signAttachment(String attachmentId,String otpNumber) throws AttachmentNotFound {
         Attachment attachment = getAttachmentById(attachmentId);
-        OtpValidationRequest otpValidationRequest = new OtpValidationRequest(attachmentId,otpNumber);
+        OtpValidationRequest otpValidationRequest = new OtpValidationRequest(attachment.getSubscriberId(),otpNumber);
         boolean isOtpValid = smsService.validateOtp(otpValidationRequest);
+        System.out.println(isOtpValid);
         if (isOtpValid){
             ContractAttachmentDTO contractAttachmentDTO = new ContractAttachmentDTO(attachment.getSubscriptionId(),
                     attachment.getSubscriberId(),attachment.getAccountsId(),attachment.getCardsId());

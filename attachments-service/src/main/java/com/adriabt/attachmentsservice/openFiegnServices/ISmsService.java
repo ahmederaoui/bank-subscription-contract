@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "SMS-SERVICE")
 public interface ISmsService {
-    @PostMapping("/validate")
+    @PostMapping("/api/sms/validate")
     boolean validateOtp(@RequestBody OtpValidationRequest otpValidationRequest);
 }

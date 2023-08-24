@@ -58,7 +58,7 @@ public class AttachmentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PostMapping("/cancel/{attachmentId")
+    @PostMapping("/cancel/{attachmentId}")
     public ResponseEntity<?> cancelAttachment(@PathVariable String attachmentId){
         try {
             return ResponseEntity.ok(attachmentService.cancelAttachment(attachmentId));
@@ -66,7 +66,7 @@ public class AttachmentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/search/{attachmentId")
+    @GetMapping("/search/{attachmentId}")
     public ResponseEntity<?> getAttachmentById(@PathVariable String attachmentId){
         try {
             return ResponseEntity.ok(attachmentService.getAttachmentById(attachmentId));

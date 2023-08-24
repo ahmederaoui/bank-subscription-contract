@@ -8,8 +8,6 @@ import com.adriabt.usersservice.exceptions.EmailExist;
 import com.adriabt.usersservice.exceptions.MissingInformation;
 import com.adriabt.usersservice.repositories.AgentRepository;
 import com.adriabt.usersservice.services.IAgentService;
-import com.adriabt.usersservice.services.MFATokenManager;
-import dev.samstevens.totp.exceptions.QrGenerationException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,7 +31,7 @@ public class AgentServiceImpl implements IAgentService {
     }
 
     @Override
-    public MfaTokenData createAgent(Agent agent) throws EmailExist, MissingInformation, QrGenerationException {
+    public Agent createAgent(Agent agent) throws EmailExist, MissingInformation {
         if (agent.getFirstname()!=null && agent.getLastname()!=null
                 && agent.getEmail()!=null&& agent.getPassword()!=null){
             Optional<Agent> newAgent =agentRepository.findAgentByEmail(agent.getEmail());
@@ -43,15 +41,16 @@ public class AgentServiceImpl implements IAgentService {
             agent.setCreationDate(new Date());
             agent.setUpdateDate(new Date());
             agent.setPassword(passwordEncoder.encode(agent.getPassword()));
-            String secret = mfaTokenManager.generateSecretKey();
+            return agentRepository.save(agent);
+            /*String secret = mfaTokenManager.generateNewSecret();
             agent.setTotpSecret(secret);
             Agent agent1 = agentRepository.save(agent);
-            if (agent1!=null){
-                return new MfaTokenData(mfaTokenManager.getQRCode(secret), secret);
-            }
+          if (agent1!=null){
+                return new MfaTokenData( mfaTokenManager.generateQrCodeImageUri(secret) , secret) ;
+          }*/
 
         }else throw new MissingInformation("Some important information is missing");
-        return null;
+//        return null;
     }
 
 

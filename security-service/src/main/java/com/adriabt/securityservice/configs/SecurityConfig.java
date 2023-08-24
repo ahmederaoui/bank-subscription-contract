@@ -1,8 +1,6 @@
 package com.adriabt.securityservice.configs;
 
 import com.adriabt.securityservice.exceptions.AgentNotFound;
-import com.adriabt.securityservice.models.Agent;
-import com.adriabt.securityservice.models.AppRole;
 import com.adriabt.securityservice.services.AgentService;
 import com.nimbusds.jose.jwk.JWK;
 import com.nimbusds.jose.jwk.JWKSet;
@@ -15,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
@@ -24,12 +20,15 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 
 @Configuration
 @EnableWebSecurity
@@ -56,20 +55,22 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService inMemoryUserDetailsManager(){
         return username -> {
+            Instant instant=Instant.now();
+            JwtClaimsSet jwtClaimsSet=JwtClaimsSet.builder()
+                    .subject("subject")
+                    .issuedAt(instant)
+                    .expiresAt(instant.plus(1, ChronoUnit.MINUTES))
+                    .issuer("security-service")
+                    .claim("scope","BACKOFFICE")
+                    .build();
+            String jwtAccessToken=jwtEncoder().encode(JwtEncoderParameters.from(jwtClaimsSet)).getTokenValue();
             try {
-                return (UserDetails) agentService.getAgentByEmail(username)
+                return (UserDetails) agentService.getAgentByEmail(username,"Bearer "+jwtAccessToken)
                         .orElseThrow(()->new AgentNotFound(String.format("The agent %s not found.",username)));
             } catch (AgentNotFound e) {
                 throw new RuntimeException(e);
             }
         };
-        /*return (username)->{
-            Agent agent = new Agent();
-            agent.setEmail(username);
-            agent.setPassword(passwordEncoder.encode("faasgfsdg"));
-            agent.setRole(AppRole.BACKOFFICE);
-            return agent;
-        };*/
     }
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -92,5 +93,16 @@ public class SecurityConfig {
         JWK jwk= new RSAKey.Builder(rsakeysConfig.publicKey()).privateKey(rsakeysConfig.privateKey()).build();
         JWKSource<SecurityContext> jwkSource= new ImmutableJWKSet<>(new JWKSet(jwk));
         return new NimbusJwtEncoder(jwkSource);
+    }
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        CorsConfiguration corsConfiguration=new CorsConfiguration();
+        corsConfiguration.addExposedHeader("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        corsConfiguration.addAllowedOrigin("*");
+        UrlBasedCorsConfigurationSource corsConfigurationSource=new UrlBasedCorsConfigurationSource();
+        corsConfigurationSource.registerCorsConfiguration("/**",corsConfiguration);
+        return corsConfigurationSource;
     }
 }
