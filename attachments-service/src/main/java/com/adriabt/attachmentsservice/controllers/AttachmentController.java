@@ -5,6 +5,7 @@ import com.adriabt.attachmentsservice.enums.AttachmentStatus;
 import com.adriabt.attachmentsservice.models.SignRequest;
 import com.adriabt.attachmentsservice.services.IAttachmentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,17 +16,17 @@ public class AttachmentController {
     private final IAttachmentService attachmentService;
 
     @PostMapping("/create")
-    public ResponseEntity<?> registerAttachment(@RequestBody Attachment attachment){
+    public ResponseEntity<?> registerAttachment(@RequestBody Attachment attachment,@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
         try {
-            return ResponseEntity.ok(attachmentService.createAttachment(attachment));
+            return ResponseEntity.ok(attachmentService.createAttachment(attachment,authorizationHeader));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @PutMapping("/update")
-    public ResponseEntity<?> updateAttachment(@RequestBody Attachment attachment){
+    public ResponseEntity<?> updateAttachment(@RequestBody Attachment attachment,@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
         try {
-            return ResponseEntity.ok(attachmentService.updateAttachment(attachment));
+            return ResponseEntity.ok(attachmentService.updateAttachment(attachment,authorizationHeader));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -43,17 +44,17 @@ public class AttachmentController {
         }
     }
     @PostMapping("/sign")
-    public ResponseEntity<?> signAttachment(@RequestBody SignRequest signRequest){
+    public ResponseEntity<?> signAttachment(@RequestBody SignRequest signRequest,@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         try {
-            return ResponseEntity.ok(attachmentService.signAttachment(signRequest.getAttachmentId(), signRequest.getOtpNumber()));
+            return ResponseEntity.ok(attachmentService.signAttachment(signRequest.getAttachmentId(), signRequest.getOtpNumber(),authorizationHeader));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
     @PostMapping("/terminate")
-    public ResponseEntity<?> terminateAttachment(@RequestBody SignRequest signRequest){
+    public ResponseEntity<?> terminateAttachment(@RequestBody SignRequest signRequest,@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
         try {
-            return ResponseEntity.ok(attachmentService.terminateAttachment(signRequest.getAttachmentId(), signRequest.getOtpNumber()));
+            return ResponseEntity.ok(attachmentService.terminateAttachment(signRequest.getAttachmentId(), signRequest.getOtpNumber(),authorizationHeader));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MobileCeilingController {
     private final ICeilingService<MobileCeiling> ceilingService;
-    @PostMapping("/create/{subscriptionId}")
-    public ResponseEntity<?> addCeilingToSubscription(@RequestBody MobileCeiling ceiling, @PathVariable String subscriptionId){
+    @PostMapping("/create")
+    public ResponseEntity<?> addCeilingToSubscription(@RequestBody MobileCeiling ceiling, @RequestParam(value = "subscriptionId",defaultValue = "") String subscriptionId){
         try {
             return ResponseEntity.ok(ceilingService.createCeiling(ceiling,subscriptionId));
         } catch (Exception e) {

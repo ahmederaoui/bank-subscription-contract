@@ -22,11 +22,27 @@ public class SubscriberController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @GetMapping("/search")
+    @GetMapping("")
     public ResponseEntity<?> getAllSubscribers(@RequestParam(value = "page", defaultValue = "0") int page,
                                                 @RequestParam(value = "size", defaultValue = "10") int size){
         try {
             return ResponseEntity.ok(subscriberService.findAllSubscribersByKeyword(page,size));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchSubscribers(@RequestParam(value = "firstname", defaultValue = "") String firstname,
+                                               @RequestParam(value = "lastname", defaultValue = "") String lastname,
+                                               @RequestParam(value = "email", defaultValue = "") String email,
+                                               @RequestParam(value = "nationality", defaultValue = "") String nationality,
+                                               @RequestParam(value = "maritalStatus", defaultValue = "") MaritalStatus maritalStatus,
+                                               @RequestParam(value = "cin", defaultValue = "") String cin,
+                                               @RequestParam(value = "id", defaultValue = "") String id,
+                                                @RequestParam(value = "page", defaultValue = "0") int page,
+                                               @RequestParam(value = "size", defaultValue = "10") int size){
+        try {
+            return ResponseEntity.ok(subscriberService.searchSubscribers(firstname,  lastname,  email,  nationality,  maritalStatus,  cin,  id,page,size));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

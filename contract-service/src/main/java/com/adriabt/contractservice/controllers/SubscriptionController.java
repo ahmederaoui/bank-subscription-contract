@@ -1,12 +1,14 @@
 package com.adriabt.contractservice.controllers;
 
 import com.adriabt.contractservice.dtos.AttachmentDTO;
+import com.adriabt.contractservice.dtos.SignRequest;
 import com.adriabt.contractservice.entities.Subscription;
 import com.adriabt.contractservice.enums.ClientSegment;
 import com.adriabt.contractservice.enums.ContractStatus;
 import com.adriabt.contractservice.enums.ContractType;
 import com.adriabt.contractservice.services.ISubscriptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -46,7 +48,7 @@ public class SubscriptionController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-    @PutMapping("/cancelOrTerminate/{subscriptionId}")
+    @PutMapping("/cancel/{subscriptionId}")
     public ResponseEntity<?> cancelOrTerminateSubscription(@PathVariable String subscriptionId){
         try {
             return ResponseEntity.ok(subscriptionService.cancelOrTerminateSubscription(subscriptionId));
@@ -76,6 +78,15 @@ public class SubscriptionController {
     public ResponseEntity<?> getSubscriptionsById(@PathVariable String subscriptionId){
         try {
             return ResponseEntity.ok(subscriptionService.getSubscriptionById(subscriptionId));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @PostMapping("/sign")
+    public ResponseEntity<?>signContract(@RequestBody SignRequest signRequest, @RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader){
+        try {
+            return ResponseEntity.ok(subscriptionService.signSubscription(signRequest.getSubscriptionId()
+            ,signRequest.getOtpNumber(),signRequest.getUsername(),authorizationHeader));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

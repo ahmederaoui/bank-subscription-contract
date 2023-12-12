@@ -48,6 +48,12 @@ public class SubscriberServiceImpl implements ISubscriberService {
     }
 
     @Override
+    public Page<Subscriber> searchSubscribers(String firstname, String lastname, String email, String nationality, MaritalStatus maritalStatus, String cin, String id, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return subscriberRepository.findAllByFirstnameContainsIgnoreCaseAndLastnameContainsIgnoreCaseAndEmailContainsIgnoreCaseAndNationalityContainsIgnoreCaseAndMaritalStatusAndCinStartingWithAndIdStartingWith( firstname,  lastname,  email,  nationality,  maritalStatus,  cin,  id,pageable);
+    }
+
+    @Override
     public Subscriber findSubscriberByEmail(String email) throws SubscriberNotFound {
         return subscriberRepository.findSubscriberByEmail(email).orElseThrow(()->new SubscriberNotFound(String.format("The subscriber %s not found",email)));
     }

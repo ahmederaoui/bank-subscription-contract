@@ -27,7 +27,7 @@ public class Subscription {
     @Enumerated(value = EnumType.STRING)
     private ContractType contractType;
     private String agency;
-    private Long BankCode;
+    private Long bankCode;
     @Enumerated(value = EnumType.STRING)
     private ClientSegment clientSegment;
     private String address;

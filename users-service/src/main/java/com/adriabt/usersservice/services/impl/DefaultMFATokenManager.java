@@ -30,10 +30,10 @@ public class DefaultMFATokenManager implements MFATokenManager {
 
     public String generateQrCodeImageUri(String secret) {
         QrData data = new QrData.Builder()
-                .label("Alibou Coding 2FA example")
+                .label("Adria Business & Technology - TOTP")
                 .secret(secret)
-                .issuer("Alibou-Coding")
-                .algorithm(HashingAlgorithm.SHA256)
+                .issuer("Adria B&T")
+                .algorithm(HashingAlgorithm.SHA1)
                 .digits(6)
                 .period(30)
                 .build();
@@ -53,7 +53,7 @@ public class DefaultMFATokenManager implements MFATokenManager {
         Agent agent = agentService.findAgentByEmail(verificationRequest.getEmail())
                 .orElseThrow(()->new AgentNotFound(String.format("This agent %s Not found",verificationRequest.getEmail())));
         TimeProvider timeProvider = new SystemTimeProvider();
-        CodeGenerator codeGenerator = new DefaultCodeGenerator(HashingAlgorithm.SHA256);
+        CodeGenerator codeGenerator = new DefaultCodeGenerator();
         CodeVerifier verifier = new DefaultCodeVerifier(codeGenerator, timeProvider);
         return verifier.isValidCode(agent.getTotpSecret(), verificationRequest.getCode());
     }

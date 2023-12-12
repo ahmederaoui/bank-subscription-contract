@@ -13,4 +13,6 @@ public interface SubscriberRepository extends JpaRepository<Subscriber,String> {
     Page<Subscriber> findAll(Pageable pageable);
     Optional<Subscriber> findSubscriberByEmail(String email);
     boolean  deleteSubscriberByEmail(String email);
+    //Page<Subscription> findAllByAgencyContainsIgnoreCaseAndContractStatusAndContractTypeAndClientSegmentAndIdStartingWith(String agency, ContractStatus contractStatus, ContractType contractType, ClientSegment clientSegment,String id ,Pageable pageable);
+    Page<Subscriber> findAllByFirstnameContainsIgnoreCaseAndLastnameContainsIgnoreCaseAndEmailContainsIgnoreCaseAndNationalityContainsIgnoreCaseAndMaritalStatusAndCinStartingWithAndIdStartingWith(String firstname,String lastname, String email,String nationality, MaritalStatus maritalStatus,String cin, String id,Pageable pageable);
 }
