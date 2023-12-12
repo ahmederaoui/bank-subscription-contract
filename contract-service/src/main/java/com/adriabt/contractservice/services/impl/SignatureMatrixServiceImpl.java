@@ -30,9 +30,10 @@ public class SignatureMatrixServiceImpl implements ISignatureMatrixService {
         if (signatureMatrix.getMaxAmount().isNaN()||
                 signatureMatrix.getMinAmount().isNaN()||
                 signatureMatrix.getAuthorizedOperation()==null) throw new IncompleteInformation("Some information is messing");
+        System.out.println(signatureMatrix);
         SignatureMatrix newSignature = matrixRepository.save(signatureMatrix);
         subscription.getSignatureMatrices().add(newSignature);
-        subscriptionRepository.save(subscription);
+        System.out.println(subscription);
         return newSignature;
     }
 

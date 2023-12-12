@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class WebCeilingController {
     private final ICeilingService<WebCeiling> ceilingService;
-    @PostMapping("/create/{subscriptionId}")
-    public ResponseEntity<?> addCeilingToSubscription(@RequestBody WebCeiling ceiling, @PathVariable String subscriptionId){
+    @PostMapping("/create")
+    public ResponseEntity<?> addCeilingToSubscription(@RequestBody WebCeiling ceiling, @RequestParam(value = "subscriptionId",defaultValue = "") String subscriptionId){
         try {
             return ResponseEntity.ok(ceilingService.createCeiling(ceiling,subscriptionId));
         } catch (Exception e) {

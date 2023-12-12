@@ -3,7 +3,6 @@ package com.adriabt.usersservice.controllers;
 import com.adriabt.usersservice.dtos.VerificationRequest;
 import com.adriabt.usersservice.entities.Agent;
 import com.adriabt.usersservice.services.IAgentService;
-import com.adriabt.usersservice.services.MFATokenManager;
 import com.adriabt.usersservice.services.impl.DefaultMFATokenManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +20,14 @@ public class AgentController {
         try {
             System.out.println(agentService.findAgentByEmail(email));
             return ResponseEntity.ok(agentService.findAgentByEmail(email));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+    @GetMapping("/qrcode/{email}")
+    public ResponseEntity<?> getQrCode(@PathVariable String email) {
+        try {
+            return ResponseEntity.ok(agentService.getQrCode(email));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
@@ -50,5 +57,9 @@ public class AgentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
 
+    }
+    @PostMapping
+    public String getString(@RequestBody String ahmed){
+        return ahmed;
     }
 }

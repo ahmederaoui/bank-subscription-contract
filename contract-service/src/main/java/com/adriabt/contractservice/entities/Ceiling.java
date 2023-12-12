@@ -18,6 +18,6 @@ public class Ceiling {
     private String id;
     private Double minUnitAmount;
     private Double maxUnitCeiling;
-    private Double TransferPerDay;
+    private Double transferPerDay;
 
 }

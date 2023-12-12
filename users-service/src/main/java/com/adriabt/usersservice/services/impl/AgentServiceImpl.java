@@ -31,7 +31,7 @@ public class AgentServiceImpl implements IAgentService {
     }
 
     @Override
-    public Agent createAgent(Agent agent) throws EmailExist, MissingInformation {
+    public MfaTokenData createAgent(Agent agent) throws EmailExist, MissingInformation {
         if (agent.getFirstname()!=null && agent.getLastname()!=null
                 && agent.getEmail()!=null&& agent.getPassword()!=null){
             Optional<Agent> newAgent =agentRepository.findAgentByEmail(agent.getEmail());
@@ -41,16 +41,16 @@ public class AgentServiceImpl implements IAgentService {
             agent.setCreationDate(new Date());
             agent.setUpdateDate(new Date());
             agent.setPassword(passwordEncoder.encode(agent.getPassword()));
-            return agentRepository.save(agent);
-            /*String secret = mfaTokenManager.generateNewSecret();
+            //return agentRepository.save(agent);
+            String secret = mfaTokenManager.generateNewSecret();
             agent.setTotpSecret(secret);
             Agent agent1 = agentRepository.save(agent);
           if (agent1!=null){
                 return new MfaTokenData( mfaTokenManager.generateQrCodeImageUri(secret) , secret) ;
-          }*/
+          }
 
         }else throw new MissingInformation("Some important information is missing");
-//        return null;
+        return null;
     }
 
 
@@ -62,13 +62,13 @@ public class AgentServiceImpl implements IAgentService {
         if (agent.getLastname()!=null) updatedAgent.setLastname(agent.getLastname());
         if (agent.getPhone()!=null) updatedAgent.setPhone(agent.getPhone());
         if (agent.getAgency()!=null) updatedAgent.setAgency(agent.getAgency());
-        if (agent.getEmail()!=null) {
-            Optional<Agent> newAgent =agentRepository.findAgentByEmail(agent.getEmail());
-            if (newAgent.isPresent()) throw new EmailExist(String.format("This email %s is already exist",
-                    agent.getEmail()));
-            updatedAgent.setEmail(agent.getEmail());
-        }
         updatedAgent.setUpdateDate(new Date());
         return agentRepository.save(updatedAgent);
+    }
+
+    @Override
+    public MfaTokenData getQrCode(String email) throws AgentNotFound {
+        Agent agent = findAgentByEmail(email);
+        return new MfaTokenData( mfaTokenManager.generateQrCodeImageUri(agent.getTotpSecret()) , agent.getTotpSecret());
     }
 }

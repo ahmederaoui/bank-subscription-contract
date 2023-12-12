@@ -4,17 +4,14 @@ import com.adriabt.attachmentsservice.models.ContractAttachmentDTO;
 import com.adriabt.attachmentsservice.models.Subscription;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(name = "CONTRACTS-SERVICE")
 public interface IContractService {
     @PostMapping("/api/subscriptions/attach")
-    void attachContract(@RequestBody ContractAttachmentDTO contractAttachmentDTO);
+    void attachContract(@RequestBody ContractAttachmentDTO contractAttachmentDTO, @RequestHeader("Authorization")String token);
     @PostMapping("/api/subscriptions/detach")
-    void detachContract(ContractAttachmentDTO contractAttachmentDTO);
+    void detachContract(ContractAttachmentDTO contractAttachmentDTO, @RequestHeader("Authorization")String token);
     @GetMapping("/api/subscriptions/search/{subscriptionId}")
-    Subscription getSubscriptionsById(@PathVariable String subscriptionId);
+    Subscription getSubscriptionsById(@PathVariable String subscriptionId, @RequestHeader("Authorization")String token);
 }

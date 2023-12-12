@@ -20,8 +20,8 @@ public class AuthController {
             return e.getMessage();
         }
     }
-    /*@GetMapping
+    @PostMapping("/ahmed")
     public String getString(){
         return "ahmed eraoui";
-    }*/
+    }
 }

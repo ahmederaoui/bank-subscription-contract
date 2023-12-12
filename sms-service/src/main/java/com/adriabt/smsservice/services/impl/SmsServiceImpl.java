@@ -63,7 +63,7 @@ public class SmsServiceImpl implements ISmsService {
         String username = null;
         for(String key : keys)
             username = key;
-        if (otpValidationRequest.getUsername().equals(username)) {
+        if (otpValidationRequest.getUsername().equals(username) && otpMap.get(username).equals(otpValidationRequest.getOtpNumber())) {
             otpMap.remove(username,otpValidationRequest.getOtpNumber());
             return true;
         } else {

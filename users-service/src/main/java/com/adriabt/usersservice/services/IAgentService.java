@@ -8,6 +8,7 @@ import com.adriabt.usersservice.exceptions.MissingInformation;
 
 public interface IAgentService {
     Agent findAgentByEmail(String email) throws AgentNotFound;
-    Agent createAgent(Agent agent) throws EmailExist, MissingInformation;
+    MfaTokenData createAgent(Agent agent) throws EmailExist, MissingInformation;
     Agent updateAgent(Agent agent) throws AgentNotFound, EmailExist;
+    MfaTokenData getQrCode(String email) throws AgentNotFound;
 }

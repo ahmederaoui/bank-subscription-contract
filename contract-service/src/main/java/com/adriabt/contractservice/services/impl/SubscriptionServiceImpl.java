@@ -1,12 +1,15 @@
 package com.adriabt.contractservice.services.impl;
 
 import com.adriabt.contractservice.dtos.AttachmentDTO;
+import com.adriabt.contractservice.dtos.OtpValidationRequest;
 import com.adriabt.contractservice.entities.Subscription;
 import com.adriabt.contractservice.enums.ClientSegment;
 import com.adriabt.contractservice.enums.ContractStatus;
 import com.adriabt.contractservice.enums.ContractType;
 import com.adriabt.contractservice.exceptions.IncompleteInformation;
+import com.adriabt.contractservice.exceptions.OtpInvalid;
 import com.adriabt.contractservice.exceptions.SubscriptionNotFound;
+import com.adriabt.contractservice.openFeignServices.SmsService;
 import com.adriabt.contractservice.repositories.SubscriptionRepository;
 import com.adriabt.contractservice.services.ISubscriptionService;
 import jakarta.transaction.Transactional;
@@ -26,6 +29,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SubscriptionServiceImpl implements ISubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
+    private final SmsService smsService;
     @Override
     public Subscription createSubscription(Subscription subscription) throws IncompleteInformation {
         if(subscription.getAgency()==null||
@@ -95,5 +99,18 @@ public class SubscriptionServiceImpl implements ISubscriptionService {
     @Override
     public Subscription getSubscriptionById(String subscriptionId) throws SubscriptionNotFound {
         return subscriptionRepository.findById(subscriptionId).orElseThrow(()->new SubscriptionNotFound(String.format("This subscription %s not found",subscriptionId)));
+    }
+
+    @Override
+    public Subscription signSubscription(String subscriptionId,  String otpNumber, String username,String token) throws SubscriptionNotFound, OtpInvalid {
+        Subscription subscription = getSubscriptionById(subscriptionId);
+        OtpValidationRequest otpValidationRequest = new OtpValidationRequest(username,otpNumber);
+        boolean isOtpValid = smsService.validateOtp(otpValidationRequest,token);
+        System.out.println("hey / "+smsService.validateOtp(otpValidationRequest,token));
+        System.out.println(isOtpValid);
+        if (isOtpValid){
+            subscription.setContractStatus(ContractStatus.SIGNED);
+            return subscriptionRepository.save(subscription);
+        }else throw new OtpInvalid(String.format("Your otp %s is invalid",otpNumber ));
     }
 }
